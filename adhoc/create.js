@@ -19,18 +19,18 @@ const info = {
   // "mma fighting on sbn": "channel/UC4f1JueVgo5t9HSmobCRPug",
   // "nfl throwback": "channel/UCJdl3Paao2f3ha5JXMYUCIA",
   // "jr sport brief": "channel/UCJRMOYY6Tf_w2yQ_6jGZXmg",
-  "sports illustrated": "channel/UCPAt6z5uX_c5Eo_cSNROzYw"
+  "sports illustrated": "channel/UCPAt6z5uX_c5Eo_cSNROzYw",
 };
 
 async function create() {
   for (const name in info) {
     const code = info[name];
     try {
-      const source_url = `https://www.youtube.com/${code}/videos`;
+      const source_url = `https://www.youtube.com/channel/${code}/videos`;
       const options = { upsert: true, new: true };
       const item = {
         name,
-        source_url
+        source_url,
       };
       const source = await Youtube.sports.findOneAndUpdate(
         { source_url },
