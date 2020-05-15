@@ -8,10 +8,10 @@ async function perSource(source, trigger) {
   // console.log({source})
   const { source_url } = source;
   const coreInfos = await getCoreInfos(source);
-  const links = coreInfos.map(k => k.content_url);
+  const links = coreInfos.map((k) => k.content_url);
   const scannerConfig = {
     target: `scanner`,
-    data: { source_url, source_type: `youtube_${trigger}`, links, coreInfos }
+    data: { source_url, source_type: `youtube_${trigger}`, links, coreInfos },
   };
   postData(scannerConfig);
   return;
@@ -38,14 +38,13 @@ async function getCoreInfos({ source_url, name }) {
 }
 
 function getInfoPerVideo(htmlMarkup) {
-  const coreInfo = {};
-
   const slug = parseInfo(htmlMarkup, `href="`, '"');
-  coreInfo.content_url = `https://www.youtube.com${slug}`;
-  coreInfo.views = parseInt(
+  const content_url = `https://www.youtube.com${slug}`;
+  console.log({ slug, content_url });
+  const views = parseInt(
     parseInfo(htmlMarkup, `info"><li>`, " views").replace(",", "")
   );
-  coreInfo.title = parseInfo(htmlMarkup, `"nofollow">`, "</a>");
+  const title = parseInfo(htmlMarkup, `"nofollow">`, "</a>");
   const minutes = parseInt(parseInfo(htmlMarkup, `Duration: `, " minutes, "));
   const seconds = parseInt(parseInfo(htmlMarkup, ` minutes, `, " seconds."));
   let content_minutes = minutes;
@@ -53,9 +52,13 @@ function getInfoPerVideo(htmlMarkup) {
     content_minutes += 1;
   }
 
-  coreInfo.content_minutes = content_minutes;
-  coreInfo.content_type = "video";
-  return coreInfo;
+  return {
+    content_url,
+    views,
+    title,
+    content_minutes,
+    content_type: "video",
+  };
 }
 
 function parseInfo(htmlMarkup, pre, post) {
@@ -66,5 +69,5 @@ function parseInfo(htmlMarkup, pre, post) {
 }
 
 module.exports = {
-  perSource
+  perSource,
 };
